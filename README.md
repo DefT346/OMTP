@@ -8,11 +8,11 @@ OMTP - C# библиотека клиент-серверного инструм�
 ### Запуск сервера
 <pre><code class='language-cs'>var server = Server.Run("127.0.0.1", 25565, 20, ServerSendExtensions.clientPackets);
 </code></pre>
->[ServerSendExtensions.clientPackets](#класс-обработки-на-сервере)
+>[ServerHandlerExtensions.clientPackets](#класс-обработки-на-сервере)
 ### Создание клиента
 <pre><code class='language-cs'>var client = new OMTP_C.Client(ClientSendExtensions.serverPackets);
 </code></pre>
->[ClientSendExtensions.serverPackets](#класс-обработки-на-клиенте)
+>[ClientHandlerExtensions.serverPackets](#класс-обработки-на-клиенте)
 
 ### Подключение клиента
 <pre><code class='language-cs'>client.Connect("Unique Name", "127.0.0.1", 25565);
@@ -26,7 +26,7 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 ## Шаблоны
 
 ### Класс обработки на сервере
-<pre><code class='language-cs'>public static class ServerSendExtensions
+<pre><code class='language-cs'>public static class ServerHandlerExtensions
 {
     static ServerPackets serverPackets = new ServerPackets
         {
@@ -60,7 +60,7 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 }</code></pre>
 
 ### Класс обработки на клиенте
-<pre><code class='language-cs'>public static class ClientSendExtensions
+<pre><code class='language-cs'>public static class ClientHandlerExtensions
 {
     public static Handlers&lt;OMTP_C.PacketHandler&gt; serverPackets = new Handlers&lt;OMTP_C.PacketHandler&gt;
         {
