@@ -25,6 +25,20 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 ### Настройка логов
 Для включения/отключения вывода, изменения шаблонов форматирования логов, обратитесь к классу logSettings в экземпляре сервера или клиента и выберите необходимые параметры.
 
+### События
+#Сервер
+<pre><code class='language-cs'>server.OnUserConnect += AnyConnect;
+void AnyConnect(Server server, int id, Packet packet)
+
+server.OnUserDisconnect += AnyDisconnect;
+void AnyDisconnect(Server server, Node client)
+</code></pre>
+#Глобальные
+<pre><code class='language-cs'>
+Core.ThreadUpdate += Update;
+void Update()
+</code></pre>
+
 ## Шаблоны
 
 ### Класс обработки на сервере
