@@ -34,16 +34,14 @@ server.OnUserDisconnect += AnyDisconnect;
 void AnyDisconnect(Server server, Node client) { }
 </code></pre>
 Клиент
-<pre><code class='language-cs'>
-client.OnConnected += Connected;
+<pre><code class='language-cs'>client.OnConnected += Connected;
 void Connected() { }
 
 client.OnDisconnect += Disconnected;
 void Disconnected() { }
 </code></pre>
 Глобальные
-<pre><code class='language-cs'>
-Core.ThreadUpdate += Update;
+<pre><code class='language-cs'>Core.ThreadUpdate += Update;
 void Update() { }
 </code></pre>
 
