@@ -9,7 +9,7 @@ OMTP - C# библиотека клиент-серверного инструм�
 </code></pre>
 >[ServerHandlerExtensions.clientPackets](#класс-обработки-на-сервере)
 ### Создание клиента
-<pre><code class='language-cs'>var client = new OMTP_C.Client(ClientHandlerExtensions.serverPackets);
+<pre><code class='language-cs'>var client = new OMTP.ClientModule.Client(ClientHandlerExtensions.serverPackets);
 </code></pre>
 >[ClientHandlerExtensions.serverPackets](#класс-обработки-на-клиенте)
 
@@ -32,12 +32,12 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
             "globalMessage"
         };
 
-    public static Handlers&lt;OMTP_S.PacketHandler&gt; clientPackets = new Handlers&lt;OMTP_S.PacketHandler&gt;
+    public static Handlers&lt;OMTP.ServerModule.PacketHandler&gt; clientPackets = new Handlers&lt;OMTP.ServerModule.PacketHandler&gt;
         {
             { "message", ServerHandler.MessageFromClient }
         };
 
-    public static void SendMessageToAll(this OMTP_S.Server server, string message)
+    public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
     {
         using (Packet packet = new Packet(serverPackets["globalMessage"]))
         {
@@ -48,7 +48,7 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 
     private static class ServerHandler
     {
-        public static void MessageFromClient(OMTP_S.Server server, int fromClient, Packet packet)
+        public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
         {
             string msg = packet.ReadString();
             Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).username}:\n{msg}");
@@ -61,7 +61,7 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 ### Класс обработки на клиенте
 <pre><code class='language-cs'>public static class ClientHandlerExtensions
 {
-    public static Handlers&lt;OMTP_C.PacketHandler&gt; serverPackets = new Handlers&lt;OMTP_C.PacketHandler&gt;
+    public static Handlers&lt;OMTP.ClientModule.PacketHandler&gt; serverPackets = new Handlers&lt;OMTP.ClientModule.PacketHandler&gt;
         {
             { "globalMessage", ClientHandler.MessageFromServer }
         };
@@ -71,7 +71,7 @@ private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
             "message"
         };
 
-    public static void SendMessage(this OMTP_C.Client client, string message)
+    public static void SendMessage(this OMTP.ClientModule.Client client, string message)
     {
         using (Packet packet = new Packet(clientPackets["message"]))
         {
