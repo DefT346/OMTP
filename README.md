@@ -45,7 +45,6 @@ void Disconnected() { }
 void Update() { }
 </code></pre>
 
-
 ## Шаблоны
 
 ### Класс обработки на сервере
