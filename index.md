@@ -1,37 +1,90 @@
-## Welcome to GitHub Pages
+# OMTP
 
-You can use the [editor on GitHub](https://github.com/DefT346/OMTP/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+OMTP - C# библиотека клиент-серверного инструментария, с широким спектром использования, основанная на протоколах передачи данных TCP и UDP. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Быстрый старт
 
-### Markdown
+### Запуск сервера
+<pre><code class='language-cs'>var server = Server.Run("127.0.0.1", 25565, 20, ServerHandlerExtensions.clientPackets);
+</code></pre>
+>[ServerHandlerExtensions.clientPackets](#класс-обработки-на-сервере)
+### Создание клиента
+<pre><code class='language-cs'>var client = new OMTP_C.Client(ClientHandlerExtensions.serverPackets);
+</code></pre>
+>[ClientHandlerExtensions.serverPackets](#класс-обработки-на-клиенте)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Подключение клиента
+<pre><code class='language-cs'>client.Connect("Unique Name", "127.0.0.1", 25565);
+</code></pre>
 
-```markdown
-Syntax highlighted code block
+### Выгрузка логов
+<pre><code class='language-cs'>OMTP.Utils.SetInternalLogMirrorAction(Log);
+private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
+</code></pre>
 
-# Header 1
-## Header 2
-### Header 3
+## Шаблоны
 
-- Bulleted
-- List
+### Класс обработки на сервере
+<pre><code class='language-cs'>public static class ServerHandlerExtensions
+{
+    static ServerPackets serverPackets = new ServerPackets
+        {
+            "globalMessage"
+        };
 
-1. Numbered
-2. List
+    public static Handlers&lt;OMTP_S.PacketHandler&gt; clientPackets = new Handlers&lt;OMTP_S.PacketHandler&gt;
+        {
+            { "message", ServerHandler.MessageFromClient }
+        };
 
-**Bold** and _Italic_ and `Code` text
+    public static void SendMessageToAll(this OMTP_S.Server server, string message)
+    {
+        using (Packet packet = new Packet(serverPackets["globalMessage"]))
+        {
+            packet.Write(message);
+            server.SendTCPDataToAll(packet);
+        }
+    }
 
-[Link](url) and ![Image](src)
-```
+    private static class ServerHandler
+    {
+        public static void MessageFromClient(OMTP_S.Server server, int fromClient, Packet packet)
+        {
+            string msg = packet.ReadString();
+            Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).username}:\n{msg}");
+            server.SendMessageToAll(msg);
+            Console.WriteLine("Сообщение было отправлено всем подключенным клиентам");
+        }
+    }
+}</code></pre>
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+### Класс обработки на клиенте
+<pre><code class='language-cs'>public static class ClientHandlerExtensions
+{
+    public static Handlers&lt;OMTP_C.PacketHandler&gt; serverPackets = new Handlers&lt;OMTP_C.PacketHandler&gt;
+        {
+            { "globalMessage", ClientHandler.MessageFromServer }
+        };
 
-### Jekyll Themes
+    static ClientPackets clientPackets = new ClientPackets
+        {
+            "message"
+        };
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/DefT346/OMTP/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+    public static void SendMessage(this OMTP_C.Client client, string message)
+    {
+        using (Packet packet = new Packet(clientPackets["message"]))
+        {
+            packet.Write(message);
+            client.SendTCPData(packet);
+        }
+    }
+    private static class ClientHandler
+    {
+        public static void MessageFromServer(Packet packet)
+        {
+            string msg = packet.ReadString();
+            Console.WriteLine($"Сообщение от сервера: {msg}");
+        }
+    }
+}</code></pre>
