@@ -18,7 +18,7 @@ OMTP - C# библиотека клиент-серверного инструм�
 </code></pre>
 
 ### Выгрузка логов
-<pre><code class='language-cs'>OMTP.Utils.SetInternalLogMirrorAction(Log);
+<pre><code class='language-cs'>OMTP.Utils.SetLogReturnAction(Log);
 private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 </code></pre>
 
