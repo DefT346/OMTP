@@ -5,7 +5,7 @@ OMTP - C# библиотека клиент-серверного инструм�
 ## Быстрый старт
 
 ### Запуск сервера
-<pre><code class='language-cs'>var server = OMTP.ServerModule.Server.Run("127.0.0.1", 25565, 20, typeof(ServerHandler));
+<pre><code class='language-cs'>var server = OMTP.ServerModule.Server.Run("127.0.0.1", 50050, 20, typeof(ServerHandler));
 </code></pre>
 >[ServerHandler](#класс-обработки-на-сервере)
 ### Создание клиента
