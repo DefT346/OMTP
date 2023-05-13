@@ -5,13 +5,13 @@ OMTP - C# библиотека клиент-серверного инструм�
 ## Быстрый старт
 
 ### Запуск сервера
-<pre><code class='language-cs'>var server = Server.Run("127.0.0.1", 25565, 20, ServerHandlerExtensions.clientPackets);
+<pre><code class='language-cs'>var server = OMTP.ServerModule.Server.Run("127.0.0.1", 25565, 20, typeof(ServerHandler));
 </code></pre>
->[ServerHandlerExtensions.clientPackets](#класс-обработки-на-сервере)
+>[ServerHandler](#класс-обработки-на-сервере)
 ### Создание клиента
-<pre><code class='language-cs'>var client = new OMTP.ClientModule.Client(ClientHandlerExtensions.serverPackets);
+<pre><code class='language-cs'>var client = new OMTP.ClientModule.Client(typeof(ClientHandler));
 </code></pre>
->[ClientHandlerExtensions.serverPackets](#класс-обработки-на-клиенте)
+>[ClientHandler](#класс-обработки-на-клиенте)
 
 ### Подключение клиента
 <pre><code class='language-cs'>client.Connect("127.0.0.1", 25565);
@@ -48,66 +48,31 @@ void Update() { }
 ## Шаблоны
 
 ### Класс обработки на сервере
-<pre><code class='language-cs'>public static class ServerHandlerExtensions
-{
-    static ServerPackets serverPackets = new ServerPackets
-        {
-            "globalMessage"
-        };
-
-    public static Handlers&lt;OMTP.ServerModule.PacketHandler&gt; clientPackets = new Handlers&lt;OMTP.ServerModule.PacketHandler&gt;
-        {
-            { "message", ServerHandler.MessageFromClient }
-        };
-
-    public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
+<pre><code class='language-cs'>public class ServerHandler
     {
-        using (Packet packet = new Packet(serverPackets["globalMessage"]))
-        {
-            packet.Write(message);
-            server.SendTCPDataToAll(packet);
-        }
-    }
-
-    private static class ServerHandler
-    {
-        public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
+        public static void Message(OMTP.ServerModule.Server server, int fromClient, Packet packet)
         {
             string msg = packet.ReadString();
-            Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).username}:\n{msg}");
+            Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).id}:\n{msg}");
             server.SendMessageToAll(msg);
             Console.WriteLine("Сообщение было отправлено всем подключенным клиентам");
         }
-    }
+
+        public static void TestMethod(OMTP.ServerModule.Server server, int fromClient, Packet packet)
+        {
+        }
 }</code></pre>
 
 ### Класс обработки на клиенте
-<pre><code class='language-cs'>public static class ClientHandlerExtensions
+<pre><code class='language-cs'>public static class ClientHandler
 {
-    public static Handlers&lt;OMTP.ClientModule.PacketHandler&gt; serverPackets = new Handlers&lt;OMTP.ClientModule.PacketHandler&gt;
-        {
-            { "globalMessage", ClientHandler.MessageFromServer }
-        };
-
-    static ClientPackets clientPackets = new ClientPackets
-        {
-            "message"
-        };
-
-    public static void SendMessage(this OMTP.ClientModule.Client client, string message)
+    public static void MessageFromServer(Packet packet)
     {
-        using (Packet packet = new Packet(clientPackets["message"]))
-        {
-            packet.Write(message);
-            client.SendTCPData(packet);
-        }
+        string msg = packet.ReadString();
+        Debug.Log($"Сообщение от сервера: {msg}");
     }
-    private static class ClientHandler
+
+    public static void Method(Packet packet)
     {
-        public static void MessageFromServer(Packet packet)
-        {
-            string msg = packet.ReadString();
-            Console.WriteLine($"Сообщение от сервера: {msg}");
-        }
     }
 }</code></pre>
