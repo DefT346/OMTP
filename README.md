@@ -49,26 +49,26 @@ void Update() { }
 
 ### Классы обработки на сервере
 <pre><code class='language-cs'>public class ServerHandler
+{
+    public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
     {
-        public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
-        {
-            string msg = packet.ReadString();
-            Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).id}:\n{msg}");
-            server.SendMessageToAll(msg);
-            Console.WriteLine("Сообщение было отправлено всем подключенным клиентам");
-        }
+        string msg = packet.ReadString();
+        Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).id}:\n{msg}");
+        server.SendMessageToAll(msg);
+        Console.WriteLine("Сообщение было отправлено всем подключенным клиентам");
+    }
 }</code></pre>
 
 <pre><code class='language-cs'>public class ServerSend
+{
+    public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
     {
-        public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
+        using (Packet packet = new Packet("MessageFromServer"))
         {
-            using (Packet packet = new Packet("MessageFromServer"))
-            {
-                packet.Write(message);
-                server.SendTCPDataToAll(packet);
-            }
+            packet.Write(message);
+            server.SendTCPDataToAll(packet);
         }
+    }
 }</code></pre>
 
 ### Классы обработки на клиенте
