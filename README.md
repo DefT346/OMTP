@@ -13,6 +13,8 @@ OMTP - C# библиотека клиент-серверного инструм�
 </code></pre>
 >[ClientHandler](#класс-обработки-на-клиенте)
 
+* Поступающий на клиент или сервер пакет имеет название-ссылку на соотвевующий метод в указаных классах хендлерах (ClientHandler или ServerHandler)
+
 ### Подключение клиента
 <pre><code class='language-cs'>client.Connect("127.0.0.1", 50050);
 </code></pre>
@@ -48,6 +50,7 @@ void Update() { }
 ## Шаблоны
 
 ### Классы обработки на сервере
+
 <pre><code class='language-cs'>public class ServerHandler
 {
     public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
