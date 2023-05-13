@@ -17,7 +17,7 @@ OMTP - C# библиотека клиент-серверного инструм�
 <pre><code class='language-cs'>client.Connect("127.0.0.1", 50050);
 </code></pre>
 
-### Выгрузка логов
+### Перехват вывода внутренних логов
 <pre><code class='language-cs'>OMTP.Utils.SetLogReturnAction(Log);
 private void Log(string message, ConsoleColor color = ConsoleColor.White) {}
 </code></pre>
