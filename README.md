@@ -47,23 +47,31 @@ void Update() { }
 
 ## Шаблоны
 
-### Класс обработки на сервере
+### Классы обработки на сервере
 <pre><code class='language-cs'>public class ServerHandler
     {
-        public static void Message(OMTP.ServerModule.Server server, int fromClient, Packet packet)
+        public static void MessageFromClient(OMTP.ServerModule.Server server, int fromClient, Packet packet)
         {
             string msg = packet.ReadString();
             Console.WriteLine($"Сообщение от клиента {server.GetClient(fromClient).id}:\n{msg}");
             server.SendMessageToAll(msg);
             Console.WriteLine("Сообщение было отправлено всем подключенным клиентам");
         }
+}</code></pre>
 
-        public static void TestMethod(OMTP.ServerModule.Server server, int fromClient, Packet packet)
+<pre><code class='language-cs'>public class ServerSend
+    {
+        public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
         {
+            using (Packet packet = new Packet("MessageFromServer"))
+            {
+                packet.Write(message);
+                server.SendTCPDataToAll(packet);
+            }
         }
 }</code></pre>
 
-### Класс обработки на клиенте
+### Классы обработки на клиенте
 <pre><code class='language-cs'>public static class ClientHandler
 {
     public static void MessageFromServer(Packet packet)
@@ -71,8 +79,16 @@ void Update() { }
         string msg = packet.ReadString();
         Debug.Log($"Сообщение от сервера: {msg}");
     }
+}</code></pre>
 
-    public static void Method(Packet packet)
+<pre><code class='language-cs'>public static class ClientSend
+{
+    public static void SendMessage(this OMTP.ClientModule.Client client, string message)
     {
+        using (Packet packet = new Packet("MessageFromClient"))
+        {
+            packet.Write(message);
+            client.SendTCPData(packet);
+        }
     }
 }</code></pre>
