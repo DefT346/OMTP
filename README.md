@@ -78,7 +78,7 @@ void Update() { }
 ### Классы обработки на клиенте
 <pre><code class='language-cs'>public static class ClientHandler
 {
-    public static void MessageFromServer(Packet packet)
+    public static void MessageFromServer(OMTP.ClientModule.Client client, Packet packet)
     {
         string msg = packet.ReadString();
         Debug.Log($"Сообщение от сервера: {msg}");
