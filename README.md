@@ -63,7 +63,7 @@ void Update() { }
     }
 }</code></pre>
 
-<pre><code class='language-cs'>public class ServerSend
+<pre><code class='language-cs'>public static class ServerSend
 {
     public static void SendMessageToAll(this OMTP.ServerModule.Server server, string message)
     {
